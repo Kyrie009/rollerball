@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public TMP_Text lifeText;
     public int lifePoints = 3;
 
+    private int pickupCount; //no. pickups in scene
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,33 +38,24 @@ public class PlayerController : MonoBehaviour
         count = 0;
         ShowScore();
         rb = GetComponent<Rigidbody>();
+        //Find all pick ups in the current scene
+        pickupCount = GameObject.FindGameObjectsWithTag("Pick Up").Length;
 
         //Set draw order
         gameOverScreen.SetActive(false);
         winScreen.SetActive(false);
+        CountDown();
 
         //lives and resets
         lifeText.text = "Life: " + lifePoints.ToString();
         resetPoint = GameObject.Find("ResetPoint");
         originalColor = GetComponent<Renderer>().material.color;
-
     }
 
     // Update is called once per frame
     void Update()
     {
         timer += Time.deltaTime;
-
-        if (timer < 0)
-        {
-            timerDisplay.text = "Ready in 3...";
-            textDisplay.text = "Collect all 13 cubes to win! If you fall you lose";
-        }
-
-        if (timer > 0 && timer < 10)
-        {
-            textDisplay.text = "";
-        }
 
         if (timer >= 0)
         {
@@ -82,14 +75,14 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * speed);
 
     }
-    //when hit something tagged as respawn you lose and restart.
+    //when hit something tagged as respawn you lose and restart. triggered when player collides into something with a collider.
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Respawn")) 
         {
             lifePoints -= 1;
             lifeText.text = "Life: " + lifePoints.ToString();
-            if (lifePoints == 0)
+            if (lifePoints == 0) //Gameover Condition
             {
                 gameOverScreen.SetActive(true);
             }
@@ -99,7 +92,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(ResetPlayer());
             } 
         }
-     
     }
 
     public IEnumerator ResetPlayer()
@@ -120,22 +112,42 @@ public class PlayerController : MonoBehaviour
         GetComponent<Renderer>().material.color = originalColor;
         resetting = false;
     }
-
+    // triggered when player passes through an object with an 'isTrigger' check.
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Pick Up"))
+        //Score count and victory condition
+        if (other.gameObject.CompareTag("Pick Up")) 
         {
             Destroy(other.gameObject);
             
             count += 1;
             ShowScore();
-
-            //double == compares the numbers.
-            if (count == 13)
+            if (count >= pickupCount)
             {
                 WinGame();
             }
         }
+    }
+    public void ShowScore()
+    {
+        scoreDisplay.text = "Score: " + count.ToString();
+    }
+
+    public void CountDown()
+    {
+        textDisplay.text = "Collect all 13 cubes to win! If you fall you lose";
+        StartCoroutine(StartCountD());
+    }
+
+    IEnumerator StartCountD()
+    {
+        timerDisplay.text = "Ready in 3...";
+        yield return new WaitForSeconds(1f);
+        timerDisplay.text = "Ready in 2...";
+        yield return new WaitForSeconds(1f);
+        timerDisplay.text = "Ready in 1...";
+        yield return new WaitForSeconds(1f);
+        textDisplay.text = "";
     }
 
     public void GameOver()
@@ -144,21 +156,15 @@ public class PlayerController : MonoBehaviour
     }
     public void WinGame()
     {
-        textDisplay.text = "You win";
+        textDisplay.text = "Level cleared";
         StartCoroutine(NextLevel());
     }
 
     IEnumerator NextLevel()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
+        Time.timeScale = 1;
         winScreen.SetActive(true);
 
-    }
-
-    public void ShowScore()
-    {
-        scoreDisplay.text = "Score: " + count;
-    }
-
-   
+    } 
 }
