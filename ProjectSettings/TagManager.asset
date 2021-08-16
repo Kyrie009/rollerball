@@ -7,6 +7,12 @@ TagManager:
   - Pick Up
   - Wall
   - Ground
+  - Button
+  - BouncePad
+  - Key1
+  - Key2
+  - Lock1
+  - Lock2
   layers:
   - Default
   - TransparentFX
