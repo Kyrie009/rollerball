@@ -10,7 +10,8 @@ public class GameBehaviour : MonoBehaviour
     protected static PlayerController _PLAYER { get { return PlayerController.INSTANCE; } }
     protected static LockManager _LM { get { return LockManager.INSTANCE; } }
 
-
+    protected static CameraController _CC { get { return CameraController.INSTANCE; } }
+    protected static Pause _P { get { return Pause.INSTANCE; } }
 }
 
 public class Singleton<T> : GameBehaviour where T : MonoBehaviour

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LockManager : Singleton<LockManager>
-{
+{   
+    //Locks
     public GameObject lock1;
     public GameObject lock2;
     bool lock1Open;
     bool lock2Open;
+    //Lock Animations
     public Animator[] stairWayToHeaven;
     public int animCount;
     
@@ -35,7 +37,7 @@ public class LockManager : Singleton<LockManager>
     {
         if (lock1Open & lock2Open)
         {  
-            if (animCount < stairWayToHeaven.Length)
+            if (animCount < stairWayToHeaven.Length) //Animation loop
             {
                 StartCoroutine(OpenDualLock());            
             }

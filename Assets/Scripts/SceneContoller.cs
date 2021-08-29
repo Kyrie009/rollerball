@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneContoller : MonoBehaviour
+public class SceneContoller : GameBehaviour
 {
     //Will Change Scene to the string passed in
     public void ChangeScene(string _sceneName)
@@ -22,6 +22,7 @@ public class SceneContoller : MonoBehaviour
     public void ToTitleScene()
     {
         SceneManager.LoadScene("Title");
+        _P.TogglePause();
     }
 
     //Gets Active Scene Name

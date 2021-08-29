@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pause : MonoBehaviour
+public class Pause : Singleton<Pause>
 {
     public GameObject pausePanel;
     bool isPaused = false;
@@ -30,11 +30,13 @@ public class Pause : MonoBehaviour
         {
             pausePanel.SetActive(true);
             Time.timeScale = 0; // sets all time based things to stop, animation,time,physics...
+            _CC.CameraDisable();
         }
         else
         {
             pausePanel.SetActive(false);
             Time.timeScale = 1; //set everthing to normal time again
+            _CC.CameraEnabled();
         }
     }
 }

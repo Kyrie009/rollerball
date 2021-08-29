@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Push : MonoBehaviour
+public class Push : GameBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {

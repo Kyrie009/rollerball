@@ -19,6 +19,8 @@ public class PlayerController :Singleton<PlayerController>
     public TMP_Text timerDisplay;
     public TMP_Text textDisplay;
     public TMP_Text lifeText;
+    public GameObject imageKey1;
+    public GameObject imageKey2;
     //Counters
     public int lifePoints = 3;
     public float timer;
@@ -42,12 +44,19 @@ public class PlayerController :Singleton<PlayerController>
         //Find all pick ups in the current scene
         pickupCount = GameObject.FindGameObjectsWithTag("Pick Up").Length;
 
-        //Set draw order
+        //Set Starting State
         gameOverScreen.SetActive(false);
         winScreen.SetActive(false);
         CountDown();
         havekey1 = false;
         havekey2 = false;
+        //refactor key system to lock manager script if have time.
+        if (imageKey1 & imageKey2 != null)
+        {
+            imageKey1.SetActive(false);
+            imageKey2.SetActive(false);
+        }
+        
 
         //lives and resets
         lifeText.text = "Life: " + lifePoints.ToString();
@@ -112,6 +121,7 @@ public class PlayerController :Singleton<PlayerController>
             {
                 _LM.Lock1();
                 havekey1 = false;
+                imageKey1.SetActive(false);
             }   
         }
         if (collision.gameObject.CompareTag("Lock2"))
@@ -120,6 +130,7 @@ public class PlayerController :Singleton<PlayerController>
             {
                 _LM.Lock2();
                 havekey2 = false;
+                imageKey2.SetActive(false);
             }         
         }
     }
@@ -148,10 +159,11 @@ public class PlayerController :Singleton<PlayerController>
         //Score count and victory condition
         if (other.gameObject.CompareTag("Pick Up")) 
         {
-            Destroy(other.gameObject);
-            
+            other.gameObject.SetActive(false);
+            other.GetComponent<Particles>().CreateParticles();
             count += 1;
             ShowScore();
+            //soundController.PlayPickupSound();
             if (count >= pickupCount)
             {
                 WinGame();
@@ -162,12 +174,14 @@ public class PlayerController :Singleton<PlayerController>
         {
             Destroy(other.gameObject);
             havekey1 = true;
+            imageKey1.SetActive(true);
         }
 
         if (other.gameObject.CompareTag("Key2"))
         {
             Destroy(other.gameObject);
             havekey2 = true;
+            imageKey2.SetActive(true);
         }
     }
 
